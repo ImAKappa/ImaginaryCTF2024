@@ -33,7 +33,7 @@ sys.exit()
 3. ...?
 4. Profit 💸💸💸
 
-## Setup local testing environment
+## Setup Local Testing Environment
 
 First things first, we should setup a local testing environment.
 This lets us rapidly prototype exploits without spamming the actual challenge server with unhelpful requests.
