@@ -269,6 +269,9 @@ After submitting our payload, we find the flag!
 
 > I forgot to take a screenshot while the challenge server was still live, but the actual flag was `ictf{d1_color_picker_fr_2ce0dd3d}`
 
+> Some other participants used a much simpler webhook attack thing, but I didn't know about webhook attacks while attempting this challenge.
+> Even if it's a bit more convoluted, I'm happy with my solution.
+
 ---
 
 Writeup by ImAKappa, for ImaginaryCTF 2024.
